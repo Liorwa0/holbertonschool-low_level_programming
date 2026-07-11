@@ -10,7 +10,7 @@ int main(void)
 	int choice;
 
 	printf("Simple Calculator\n");
-	
+
 	while (1)
 	{
 		printf("1) Add\n");
@@ -19,14 +19,18 @@ int main(void)
 		printf("4) Divide\n");
 		printf("0) Quit\n");
 		printf("Choice: ");
-		
-		scanf("%d", &choice);
+
+		if (scanf(" %d", &choice) != 1)
+		{
+			break;
+		}
 
 		if (choice == 0)
 		{
 			printf("Bye!\n");
 			break;
 		}
+		
 	}
 
 	return (0);
