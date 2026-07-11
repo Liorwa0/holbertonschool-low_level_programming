@@ -1,10 +1,5 @@
 #include <stdio.h>
 
-/**
- * main - Entry point for the simple calculator
- *
- * Return: Always 0 (Success)
- */
 int main(void)
 {
 	int choice;
@@ -30,7 +25,13 @@ int main(void)
 			printf("Bye!\n");
 			break;
 		}
-		
+		else if (choice >= 1 && choice <= 4)
+		{
+		}
+		else
+		{
+			printf("Invalid choice");
+		}
 	}
 
 	return (0);
