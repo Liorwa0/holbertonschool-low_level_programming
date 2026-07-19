@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 			carry = sum / 10;
 		}
 		res[i + j + 1] += carry;
-	}
+/* ... بعد انتهاء اللوب ... */
 	i = 0;
 	while (i < len - 1 && res[i] == 0)
 		i++;
@@ -83,4 +83,3 @@ int main(int argc, char *argv[])
 	_putchar('\n');
 	free(res);
 	return (0);
-}
