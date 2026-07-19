@@ -23,53 +23,46 @@ int _strlen(char *s)
 	return (i);
 }
 
-void print_error(void)
-{
-	char *str = "Error\n";
-
-	while (*str)
-		_putchar(*str++);
-}
-
 int main(int argc, char *argv[])
 {
 	char *s1, *s2;
-	int len1, len2, len, i, j, k, *res, carry, digit1, digit2;
+	int len1, len2, len, i, j, *res;
 
 	if (argc != 3 || !is_digit(argv[1]) || !is_digit(argv[2]))
 	{
-		print_error();
+		char *err = "Error\n";
+
+		while (*err)
+			_putchar(*err++);
 		return (98);
 	}
 	s1 = argv[1], s2 = argv[2];
 	len1 = _strlen(s1), len2 = _strlen(s2);
 	len = len1 + len2;
-	res = calloc(sizeof(int), len);
+	res = calloc(len, sizeof(int));
 	if (!res)
 	{
-		print_error();
 		return (98);
 	}
 	for (i = len1 - 1; i >= 0; i--)
 	{
-		digit1 = s1[i] - '0';
-		carry = 0;
+		int carry = 0;
+
 		for (j = len2 - 1; j >= 0; j--)
 		{
-			digit2 = s2[j] - '0';
-			k = (len1 - 1 - i) + (len2 - 1 - j);
-			carry += res[k] + (digit1 * digit2);
-			res[k] = carry % 10;
-			carry /= 10;
+			int mul = (s1[i] - '0') * (s2[j] - '0');
+			int sum = mul + res[i + j + 1] + carry;
+
+			res[i + j + 1] = sum % 10;
+			carry = sum / 10;
 		}
-		if (carry)
-			res[k + 1] += carry;
+		res[i + j + 1] += carry;
 	}
-	i = len - 1;
-	while (i > 0 && res[i] == 0)
-		i--;
-	while (i >= 0)
-		_putchar(res[i--] + '0');
+	i = 0;
+	while (i < len - 1 && res[i] == 0)
+		i++;
+	for (; i < len; i++)
+		_putchar(res[i] + '0');
 	_putchar('\n');
 	free(res);
 	return (0);
