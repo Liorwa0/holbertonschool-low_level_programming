@@ -1,49 +1,17 @@
-Tasks
-4. Once an idea has taken hold of the brain it's almost impossible to eradicate
-Write a function that returns the value of x raised to the power of y.
-
-Prototype: int _pow_recursion(int x, int y);
-If y is lower than 0, the function should return -1
-FYI: The standard library provides a different function: pow. Run man pow to learn more.
-
-julien@ubuntu:~/Recursion$ cat 4-main.c
 #include "main.h"
-#include <stdio.h>
 
 /**
- * main - check the code
+ * _pow_recursion - returns the value of x raised to the power of y
+ * @x: the base
+ * @y: the exponent
  *
- * Return: Always 0.
+ * Return: x raised to the power of y, or -1 if y is lower than 0
  */
-int main(void)
+int _pow_recursion(int x, int y)
 {
-    int r;
-
-    r = _pow_recursion(1, 10);
-    printf("%d\n", r);
-    r = _pow_recursion(1024, 0);
-    printf("%d\n", r);
-    r = _pow_recursion(2, 16);
-    printf("%d\n", r);
-    r = _pow_recursion(5, 2);
-    printf("%d\n", r);
-    r = _pow_recursion(5, -2);
-    printf("%d\n", r);
-    r = _pow_recursion(-5, 3);
-    printf("%d\n", r);
-    return (0);
+	if (y < 0)
+		return (-1);
+	if (y == 0)
+		return (1);
+	return (x * _pow_recursion(x, y - 1));
 }
-julien@ubuntu:~/Recursion$ gcc -Wall -pedantic -Werror -Wextra -std=gnu89 4-main.c 4-pow_recursion.c -o 4-pow
-julien@ubuntu:~/Recursion$ ./4-pow 
-1
-1
-65536
-25
--1
--125
-julien@ubuntu:~/Recursion$ 
-Repo:
-
-GitHub repository: holbertonschool-low_level_programming
-Directory: recursion
-File: 4-pow_recursion.c
