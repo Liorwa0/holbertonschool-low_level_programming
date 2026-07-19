@@ -1,13 +1,6 @@
 #include "main.h"
-#include <stdio.h>
 #include <stdlib.h>
 
-/**
- * is_digit - checks if a string contains only digits
- * @s: string to check
- *
- * Return: 1 if all digits, 0 otherwise
- */
 int is_digit(char *s)
 {
 	int i = 0;
@@ -21,12 +14,6 @@ int is_digit(char *s)
 	return (1);
 }
 
-/**
- * _strlen - returns the length of a string
- * @s: string to measure
- *
- * Return: length of string
- */
 int _strlen(char *s)
 {
 	int i = 0;
@@ -36,13 +23,14 @@ int _strlen(char *s)
 	return (i);
 }
 
-/**
- * main - multiplies two positive numbers
- * @argc: argument count
- * @argv: argument vector
- *
- * Return: 0 on success, 98 on failure
- */
+void print_error(void)
+{
+	char *str = "Error\n";
+
+	while (*str)
+		_putchar(*str++);
+}
+
 int main(int argc, char *argv[])
 {
 	char *s1, *s2;
@@ -50,7 +38,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 3 || !is_digit(argv[1]) || !is_digit(argv[2]))
 	{
-		printf("Error\n");
+		print_error();
 		return (98);
 	}
 	s1 = argv[1], s2 = argv[2];
@@ -59,7 +47,7 @@ int main(int argc, char *argv[])
 	res = calloc(sizeof(int), len);
 	if (!res)
 	{
-		printf("Error\n");
+		print_error();
 		return (98);
 	}
 	for (i = len1 - 1; i >= 0; i--)
