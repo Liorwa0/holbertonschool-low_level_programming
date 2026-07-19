@@ -16,6 +16,10 @@ struct dog
 	char *owner;
 };
 
+/* إضافة الـ typedef هنا */
+typedef struct dog dog_t;
+
+/* البروتوتايبات للدوال السابقة */
 void init_dog(struct dog *d, char *name, float age, char *owner);
 void print_dog(struct dog *d);
 
