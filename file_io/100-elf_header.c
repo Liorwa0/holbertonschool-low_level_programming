@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-
 /**
  * print_magic - prints magic bytes
  * @e_ident: pointer to magic bytes
@@ -18,7 +17,6 @@ void print_magic(unsigned char *e_ident)
 		printf("%02x%c", e_ident[i], i == EI_NIDENT - 1 ? '\n' : ' ');
 	}
 }
-
 /**
  * print_class - prints ELF class
  * @e_ident: pointer to header bytes
@@ -41,7 +39,6 @@ void print_class(unsigned char *e_ident)
 		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
 	}
 }
-
 /**
  * print_data - prints ELF data
  * @e_ident: pointer to header bytes
@@ -64,7 +61,6 @@ void print_data(unsigned char *e_ident)
 		printf("<unknown: %x>\n", e_ident[EI_DATA]);
 	}
 }
-
 /**
  * print_version - prints ELF version
  * @e_ident: pointer to header bytes
@@ -78,7 +74,6 @@ void print_version(unsigned char *e_ident)
 	}
 	printf("\n");
 }
-
 /**
  * print_osabi - prints OS/ABI
  * @e_ident: pointer to header bytes
@@ -107,7 +102,6 @@ void print_osabi(unsigned char *e_ident)
 		printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 	}
 }
-
 /**
  * print_abi - prints ABI version
  * @e_ident: pointer to header bytes
@@ -116,7 +110,6 @@ void print_abi(unsigned char *e_ident)
 {
 	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
 }
-
 /**
  * print_type - prints ELF type
  * @e_type: type
@@ -150,7 +143,6 @@ void print_type(unsigned int e_type, unsigned char *e_ident)
 		printf("<unknown: %x>\n", e_type);
 	}
 }
-
 /**
  * print_entry - prints entry point
  * @e_entry: entry address
@@ -174,12 +166,11 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 		printf("%#lx\n", e_entry);
 	}
 }
-
 /**
- * main - main function
+ * main - entry point
  * @argc: arg count
  * @argv: arg vector
- * Return: 0
+ * Return: 0 on success
  */
 int main(int argc, char *argv[])
 {
