@@ -26,10 +26,17 @@ void print_class(unsigned char *e_ident)
 	printf("  Class:                             ");
 	switch (e_ident[EI_CLASS])
 	{
-	case ELFCLASSNONE: printf("none\n"); break;
-	case ELFCLASS32: printf("ELF32\n"); break;
-	case ELFCLASS64: printf("ELF64\n"); break;
-	default: printf("<unknown: %x>\n", e_ident[EI_CLASS]);
+	case ELFCLASSNONE:
+		printf("none\n");
+		break;
+	case ELFCLASS32:
+		printf("ELF32\n");
+		break;
+	case ELFCLASS64:
+		printf("ELF64\n");
+		break;
+	default:
+		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
 	}
 }
 
@@ -42,10 +49,17 @@ void print_data(unsigned char *e_ident)
 	printf("  Data:                              ");
 	switch (e_ident[EI_DATA])
 	{
-	case ELFDATANONE: printf("none\n"); break;
-	case ELFDATA2LSB: printf("2's complement, little endian\n"); break;
-	case ELFDATA2MSB: printf("2's complement, big endian\n"); break;
-	default: printf("<unknown: %x>\n", e_ident[EI_DATA]);
+	case ELFDATANONE:
+		printf("none\n");
+		break;
+	case ELFDATA2LSB:
+		printf("2's complement, little endian\n");
+		break;
+	case ELFDATA2MSB:
+		printf("2's complement, big endian\n");
+		break;
+	default:
+		printf("<unknown: %x>\n", e_ident[EI_DATA]);
 	}
 }
 
@@ -70,12 +84,23 @@ void print_osabi(unsigned char *e_ident)
 	printf("  OS/ABI:                            ");
 	switch (e_ident[EI_OSABI])
 	{
-	case ELFOSABI_SYSV: printf("UNIX - System V\n"); break;
-	case ELFOSABI_HPUX: printf("UNIX - HP-UX\n"); break;
-	case ELFOSABI_NETBSD: printf("UNIX - NetBSD\n"); break;
-	case ELFOSABI_LINUX: printf("UNIX - Linux\n"); break;
-	case ELFOSABI_SOLARIS: printf("UNIX - Solaris\n"); break;
-	default: printf("<unknown: %x>\n", e_ident[EI_OSABI]);
+	case ELFOSABI_SYSV:
+		printf("UNIX - System V\n");
+		break;
+	case ELFOSABI_HPUX:
+		printf("UNIX - HP-UX\n");
+		break;
+	case ELFOSABI_NETBSD:
+		printf("UNIX - NetBSD\n");
+		break;
+	case ELFOSABI_LINUX:
+		printf("UNIX - Linux\n");
+		break;
+	case ELFOSABI_SOLARIS:
+		printf("UNIX - Solaris\n");
+		break;
+	default:
+		printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 	}
 }
 
@@ -100,12 +125,23 @@ void print_type(unsigned int e_type, unsigned char *e_ident)
 	printf("  Type:                              ");
 	switch (e_type)
 	{
-	case ET_NONE: printf("NONE (None)\n"); break;
-	case ET_REL: printf("REL (Relocatable file)\n"); break;
-	case ET_EXEC: printf("EXEC (Executable file)\n"); break;
-	case ET_DYN: printf("DYN (Shared object file)\n"); break;
-	case ET_CORE: printf("CORE (Core file)\n"); break;
-	default: printf("<unknown: %x>\n", e_type);
+	case ET_NONE:
+		printf("NONE (None)\n");
+		break;
+	case ET_REL:
+		printf("REL (Relocatable file)\n");
+		break;
+	case ET_EXEC:
+		printf("EXEC (Executable file)\n");
+		break;
+	case ET_DYN:
+		printf("DYN (Shared object file)\n");
+		break;
+	case ET_CORE:
+		printf("CORE (Core file)\n");
+		break;
+	default:
+		printf("<unknown: %x>\n", e_type);
 	}
 }
 
@@ -139,15 +175,37 @@ int main(int argc, char *argv[])
 	int fd;
 	Elf64_Ehdr *header;
 
-	if (argc != 2) { dprintf(STDERR_FILENO, "Usage: elf_header elf_filename\n"); exit(98); }
+	if (argc != 2)
+	{
+		dprintf(STDERR_FILENO, "Usage: elf_header elf_filename\n");
+		exit(98);
+	}
 	fd = open(argv[1], O_RDONLY);
-	if (fd < 0) { dprintf(STDERR_FILENO, "Error: Can't open file\n"); exit(98); }
+	if (fd < 0)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't open file\n");
+		exit(98);
+	}
 	header = malloc(sizeof(Elf64_Ehdr));
-	if (!header) { close(fd); exit(98); }
+	if (!header)
+	{
+		close(fd);
+		exit(98);
+	}
 	if (read(fd, header, sizeof(Elf64_Ehdr)) < 1)
-	{ free(header); close(fd); dprintf(STDERR_FILENO, "Error: Can't read\n"); exit(98); }
+	{
+		free(header);
+		close(fd);
+		dprintf(STDERR_FILENO, "Error: Can't read\n");
+		exit(98);
+	}
 	if (header->e_ident[EI_MAG0] != ELFMAG0)
-	{ free(header); close(fd); dprintf(STDERR_FILENO, "Error: Not ELF\n"); exit(98); }
+	{
+		free(header);
+		close(fd);
+		dprintf(STDERR_FILENO, "Error: Not ELF\n");
+		exit(98);
+	}
 	printf("ELF Header:\n");
 	print_magic(header->e_ident);
 	print_class(header->e_ident);
@@ -157,5 +215,7 @@ int main(int argc, char *argv[])
 	print_abi(header->e_ident);
 	print_type(header->e_type, header->e_ident);
 	print_entry(header->e_entry, header->e_ident);
-	free(header); close(fd); return (0);
+	free(header);
+	close(fd);
+	return (0);
 }
