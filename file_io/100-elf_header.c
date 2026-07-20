@@ -14,7 +14,9 @@ void print_magic(unsigned char *e_ident)
 
 	printf("  Magic:   ");
 	for (i = 0; i < EI_NIDENT; i++)
+	{
 		printf("%02x%c", e_ident[i], i == EI_NIDENT - 1 ? '\n' : ' ');
+	}
 }
 
 /**
@@ -71,7 +73,9 @@ void print_version(unsigned char *e_ident)
 {
 	printf("  Version:                           %d", e_ident[EI_VERSION]);
 	if (e_ident[EI_VERSION] == EV_CURRENT)
+	{
 		printf(" (current)");
+	}
 	printf("\n");
 }
 
@@ -121,7 +125,9 @@ void print_abi(unsigned char *e_ident)
 void print_type(unsigned int e_type, unsigned char *e_ident)
 {
 	if (e_ident[EI_DATA] == ELFDATA2MSB)
+	{
 		e_type >>= 8;
+	}
 	printf("  Type:                              ");
 	switch (e_type)
 	{
@@ -155,13 +161,18 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 	printf("  Entry point address:               ");
 	if (e_ident[EI_DATA] == ELFDATA2MSB)
 	{
-		e_entry = ((e_entry << 8) & 0xFF00FF00) | ((e_entry >> 8) & 0xFF00FF);
+		e_entry = ((e_entry << 8) & 0xFF00FF00) |
+			((e_entry >> 8) & 0xFF00FF);
 		e_entry = (e_entry << 16) | (e_entry >> 16);
 	}
 	if (e_ident[EI_CLASS] == ELFCLASS32)
+	{
 		printf("%#x\n", (unsigned int)e_entry);
+	}
 	else
+	{
 		printf("%#lx\n", e_entry);
+	}
 }
 
 /**
