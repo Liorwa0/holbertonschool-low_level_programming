@@ -4,14 +4,23 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+/**
+ * print_magic - prints magic bytes
+ * @e_ident: pointer to magic bytes
+ */
 void print_magic(unsigned char *e_ident)
 {
 	int i;
+
 	printf("  Magic:   ");
 	for (i = 0; i < EI_NIDENT; i++)
 		printf("%02x%c", e_ident[i], i == EI_NIDENT - 1 ? '\n' : ' ');
 }
 
+/**
+ * print_class - prints ELF class
+ * @e_ident: pointer to header bytes
+ */
 void print_class(unsigned char *e_ident)
 {
 	printf("  Class:                             ");
@@ -24,6 +33,10 @@ void print_class(unsigned char *e_ident)
 	}
 }
 
+/**
+ * print_data - prints ELF data
+ * @e_ident: pointer to header bytes
+ */
 void print_data(unsigned char *e_ident)
 {
 	printf("  Data:                              ");
@@ -36,12 +49,22 @@ void print_data(unsigned char *e_ident)
 	}
 }
 
+/**
+ * print_version - prints ELF version
+ * @e_ident: pointer to header bytes
+ */
 void print_version(unsigned char *e_ident)
 {
-	printf("  Version:                           %d %s\n",
-	       e_ident[EI_VERSION], e_ident[EI_VERSION] == EV_CURRENT ? "(current)" : "");
+	printf("  Version:                           %d", e_ident[EI_VERSION]);
+	if (e_ident[EI_VERSION] == EV_CURRENT)
+		printf(" (current)");
+	printf("\n");
 }
 
+/**
+ * print_osabi - prints OS/ABI
+ * @e_ident: pointer to header bytes
+ */
 void print_osabi(unsigned char *e_ident)
 {
 	printf("  OS/ABI:                            ");
@@ -56,14 +79,24 @@ void print_osabi(unsigned char *e_ident)
 	}
 }
 
+/**
+ * print_abi - prints ABI version
+ * @e_ident: pointer to header bytes
+ */
 void print_abi(unsigned char *e_ident)
 {
 	printf("  ABI Version:                       %d\n", e_ident[EI_ABIVERSION]);
 }
 
+/**
+ * print_type - prints ELF type
+ * @e_type: type
+ * @e_ident: pointer to header bytes
+ */
 void print_type(unsigned int e_type, unsigned char *e_ident)
 {
-	if (e_ident[EI_DATA] == ELFDATA2MSB) e_type >>= 8;
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
+		e_type >>= 8;
 	printf("  Type:                              ");
 	switch (e_type)
 	{
@@ -76,6 +109,11 @@ void print_type(unsigned int e_type, unsigned char *e_ident)
 	}
 }
 
+/**
+ * print_entry - prints entry point
+ * @e_entry: entry address
+ * @e_ident: pointer to header bytes
+ */
 void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 {
 	printf("  Entry point address:               ");
@@ -84,24 +122,32 @@ void print_entry(unsigned long int e_entry, unsigned char *e_ident)
 		e_entry = ((e_entry << 8) & 0xFF00FF00) | ((e_entry >> 8) & 0xFF00FF);
 		e_entry = (e_entry << 16) | (e_entry >> 16);
 	}
-	if (e_ident[EI_CLASS] == ELFCLASS32) printf("%#x\n", (unsigned int)e_entry);
-	else printf("%#lx\n", e_entry);
+	if (e_ident[EI_CLASS] == ELFCLASS32)
+		printf("%#x\n", (unsigned int)e_entry);
+	else
+		printf("%#lx\n", e_entry);
 }
 
+/**
+ * main - main function
+ * @argc: arg count
+ * @argv: arg vector
+ * Return: 0
+ */
 int main(int argc, char *argv[])
 {
 	int fd;
 	Elf64_Ehdr *header;
-	ssize_t read_bytes;
 
 	if (argc != 2) { dprintf(STDERR_FILENO, "Usage: elf_header elf_filename\n"); exit(98); }
 	fd = open(argv[1], O_RDONLY);
 	if (fd < 0) { dprintf(STDERR_FILENO, "Error: Can't open file\n"); exit(98); }
 	header = malloc(sizeof(Elf64_Ehdr));
 	if (!header) { close(fd); exit(98); }
-	read_bytes = read(fd, header, sizeof(Elf64_Ehdr));
-	if (read_bytes < 1) { free(header); close(fd); dprintf(STDERR_FILENO, "Error: Can't read\n"); exit(98); }
-	if (header->e_ident[EI_MAG0] != ELFMAG0) { free(header); close(fd); dprintf(STDERR_FILENO, "Error: Not ELF\n"); exit(98); }
+	if (read(fd, header, sizeof(Elf64_Ehdr)) < 1)
+	{ free(header); close(fd); dprintf(STDERR_FILENO, "Error: Can't read\n"); exit(98); }
+	if (header->e_ident[EI_MAG0] != ELFMAG0)
+	{ free(header); close(fd); dprintf(STDERR_FILENO, "Error: Not ELF\n"); exit(98); }
 	printf("ELF Header:\n");
 	print_magic(header->e_ident);
 	print_class(header->e_ident);
