@@ -1,17 +1,36 @@
-### Classification & Technical Breakdown
-* **Error Classification**: Memory Leak (`definitely lost`).
-* **Involved Memory Object**: Heap block allocated via `malloc(10 * sizeof(int))` (40 bytes total).
-* **Lifetime / Misuse Cause**:
-  * The program allocated dynamic memory on the heap and stored the returning address in a pointer variable.
-  * The function exited without invoking `free()` on this pointer, and no remaining active pointers hold the base address of this allocated chunk.
-  * Ownership was lost upon stack frame destruction, making the allocated block permanently unreachable before process termination.
+# Valgrind & AI Memory Tracer Analysis
+
+This document analyzes Valgrind diagnostic outputs for `heap_example.c` and `aliasing_example.c`, mapping high-level errors to underlying runtime memory states and evaluating AI diagnostic accuracy.
 
 ---
 
-## 2. Aliasing & Lifetime Violation Analysis (`aliasing_example.c`)
+## 1. Heap Memory Analysis (`heap_example.c`)
 
 ### Valgrind Diagnostic Trace
 ```text
+==12345== LEAK SUMMARY:
+==12345==    definitely lost: 40 bytes in 1 blocks
+==12345==    indirectly lost: 0 bytes in 0 blocks
+==12345==      possibly lost: 0 bytes in 0 blocks
+==12345==    still reachable: 0 bytes in 0 blocks
+==12345==         suppressed: 0 bytes in 0 blocks
+
+Classification & Technical Breakdown
+Error Classification: Memory Leak (definitely lost).
+
+Involved Memory Object: Heap block allocated via malloc(10 * sizeof(int)) (40 bytes total).
+
+Lifetime / Misuse Cause:
+
+The program allocated dynamic memory on the heap and stored the returning address in a pointer variable.
+
+The function exited without invoking free() on this pointer, and no remaining active pointers hold the base address of this allocated chunk.
+
+Ownership was lost upon stack frame destruction, making the allocated block permanently unreachable before process termination.
+
+2. Aliasing & Lifetime Violation Analysis (aliasing_example.c)
+Valgrind Diagnostic Trace
+Plaintext
 ==12346== Invalid free() / delete / delete[] / realloc()
 ==12346==    at 0x483CA3F: free (vg_replace_malloc.c:667)
 ==12346==    by 0x1091A2: main (aliasing_example.c:18)
