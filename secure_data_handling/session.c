@@ -4,6 +4,34 @@
 #include "session.h"
 
 /**
+ * _strdup - Duplicates a string using malloc
+ * @str: String to duplicate
+ *
+ * Return: Pointer to new string, or NULL on failure
+ */
+static char *_strdup(const char *str)
+{
+	char *dup;
+	size_t len = 0;
+	size_t i;
+
+	if (str == NULL)
+		return (NULL);
+
+	while (str[len] != '\0')
+		len++;
+
+	dup = malloc(sizeof(char) * (len + 1));
+	if (dup == NULL)
+		return (NULL);
+
+	for (i = 0; i <= len; i++)
+		dup[i] = str[i];
+
+	return (dup);
+}
+
+/**
  * create_session - Creates and initializes a new session
  * @id: Session identifier
  * @data: Pointer to data string
@@ -21,7 +49,7 @@ session_t *create_session(int id, const char *data)
 	session->id = id;
 	if (data != NULL)
 	{
-		session->data = strdup(data);
+		session->data = _strdup(data);
 		if (session->data == NULL)
 		{
 			free(session);
@@ -57,7 +85,7 @@ int update_session_data(session_t *session, const char *new_data)
 		return (1);
 	}
 
-	temp = strdup(new_data);
+	temp = _strdup(new_data);
 	if (temp == NULL)
 		return (0);
 
