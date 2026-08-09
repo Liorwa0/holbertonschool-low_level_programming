@@ -1,114 +1,64 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "session.h"
 
-/**
- * _strdup - Duplicates a string using malloc
- * @str: String to duplicate
- *
- * Return: Pointer to new string, or NULL on failure
- */
-static char *_strdup(const char *str)
+session_t *session_create(const char *id, unsigned int uid, const unsigned char *data, size_t data_len)
 {
-	char *dup;
-	size_t len = 0;
-	size_t i;
+	session_t *s;
 
-	if (str == NULL)
+	s = (session_t *)malloc(sizeof(*s));
+	if (!s)
 		return (NULL);
-
-	while (str[len] != '\0')
-		len++;
-
-	dup = malloc(sizeof(char) * (len + 1));
-	if (dup == NULL)
+	s->id = strdup(id);
+	if (!s->id) {
+		free(s);
 		return (NULL);
-
-	for (i = 0; i <= len; i++)
-		dup[i] = str[i];
-
-	return (dup);
-}
-
-/**
- * create_session - Creates and initializes a new session
- * @id: Session identifier
- * @data: Pointer to data string
- *
- * Return: Pointer to new session, or NULL on failure
- */
-session_t *create_session(int id, const char *data)
-{
-	session_t *session;
-
-	session = malloc(sizeof(session_t));
-	if (session == NULL)
-		return (NULL);
-
-	session->id = id;
-	if (data != NULL)
-	{
-		session->data = _strdup(data);
-		if (session->data == NULL)
-		{
-			free(session);
+	}
+	s->uid = uid;
+	if (data_len > 0) {
+		s->data = (unsigned char *)malloc(data_len);
+		if (!s->data) {
+			free(s->id);
+			free(s);
 			return (NULL);
 		}
+		memcpy(s->data, data, data_len);
+		s->data_len = data_len;
+	} else {
+		s->data = NULL;
+		s->data_len = 0;
 	}
-	else
-	{
-		session->data = NULL;
-	}
-
-	return (session);
+	return (s);
 }
 
-/**
- * update_session_data - Safely updates data for an existing session
- * @session: Pointer to session
- * @new_data: Pointer to new data string
- *
- * Return: 1 on success, 0 on failure
- */
-int update_session_data(session_t *session, const char *new_data)
+int session_set_data(session_t *s, const unsigned char *data, size_t data_len)
 {
-	char *temp;
+	unsigned char *tmp;
 
-	if (session == NULL)
+	if (!s)
 		return (0);
-
-	if (new_data == NULL)
-	{
-		free(session->data);
-		session->data = NULL;
+	if (data_len == 0) {
+		free(s->data);
+		s->data = NULL;
+		s->data_len = 0;
 		return (1);
 	}
-
-	temp = _strdup(new_data);
-	if (temp == NULL)
+	tmp = (unsigned char *)realloc(s->data, data_len);
+	if (!tmp) {
+		s->data_len = 0;
 		return (0);
-
-	free(session->data);
-	session->data = temp;
-
+	}
+	s->data = tmp;
+	memcpy(s->data, data, data_len);
+	s->data_len = data_len;
 	return (1);
 }
 
-/**
- * free_session - Safely frees a session and its internal data
- * @session: Pointer to session to free
- */
-void free_session(session_t *session)
+void session_destroy(session_t *s)
 {
-	if (session == NULL)
+	if (!s)
 		return;
-
-	if (session->data != NULL)
-	{
-		free(session->data);
-		session->data = NULL;
-	}
-
-	free(session);
+	free(s->id);
+	free(s->data);
+	free(s);
 }
